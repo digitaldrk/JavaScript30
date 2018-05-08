@@ -28,11 +28,51 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const items = JSON.parse(localStorage.getItem('items')) || [];
+
+  function addItem(e) {
+    e.preventDefault(); // prevents refresh
+    const text = (this.querySelector('[name=item]')).value; // wrapped in parenthesis to execute first
+    const item = {
+      text: text,
+      done: false
+    };
+
+    items.push(item); // pushing into the items array defined on line 31
+    populateList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items)); // First argument string is the key for the key-value pair
+    // localStorage.getItem < localStorage options
+    // localStorage.removeItem < localStorage options
+    this.reset();
+  }
+
+  function populateList(plates = [], platesList) { // setting a default argument incase plates is null
+    platesList.innerHTML = plates.map((plate, i) =>{
+      return `
+      <li>
+        <input type="checkbox" data-index=${i} id="items${i}" ${plate.done ? 'checked' : ''}/>
+        <label for="items${i}">${plate.text}</label>
+      </li>
+      `;
+    }).join(''); // we don't want to return an array, we want to return a huge string
+  }
+
+  function toggleDone(e) {
+    if(!e.target.matches('input')) return; // This is event delegation. It only takes in the input element. 'matches' method new browser method 👍
+    const el = e.target;
+    const index = el.dataset.index;
+    items[index].done = !items[index].done;
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);
+
+  populateList(items, itemsList);
 
 </script>
 
 
 </body>
 </html>
-
