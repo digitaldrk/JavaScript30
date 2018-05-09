@@ -39,7 +39,18 @@
 
 <button></button>
 <script>
+  const divs = document.querySelectorAll('div');
 
+  function logText(e) {
+    console.log(this.classList.value);
+    // e.stopPropagation(); THis stopPorpagation(); method stops the 'bubbling' effect
+  }
+
+  divs.forEach(div => div.addEventListener('click', logText, {
+    // capture: true runs the logText function 'on the way down' this is default. So like from parent divs down to the selected divs
+    // capture: false <- this is default
+    // once: true fires events just once. Great for buttons!
+  }));
 </script>
 </body>
 </html>
